@@ -21,13 +21,14 @@ import ctypes
 import time
 import sys
 import os
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 from multiprocessing import Pool, current_process, cpu_count
 from shmemarray import ShmemRawArray, NpShmemArray
 from functools import partial
 from randsphere import randsphere
-from tensorflow.python.ops import gradients_impl
+from tf.python.ops import gradients_impl
 
      
 class EstimateLipschitz(object):
