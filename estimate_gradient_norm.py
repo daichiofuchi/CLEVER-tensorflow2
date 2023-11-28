@@ -23,6 +23,7 @@ import sys
 import os
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
+from tensorflow.keras import *
 
 from multiprocessing import Pool, current_process, cpu_count
 from shmemarray import ShmemRawArray, NpShmemArray

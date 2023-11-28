@@ -95,6 +95,7 @@ if __name__ == "__main__":
 
     import tensorflow.compat.v1 as tf
     tf.disable_v2_behavior()
+    from tensorflow.keras import *
     from setup_cifar import CIFAR
     from setup_mnist import MNIST
     from setup_imagenet import ImageNet

@@ -14,6 +14,7 @@ import argparse
 import urllib.request
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
+from tensorflow.keras import *
 
 
 class NLayerModel:

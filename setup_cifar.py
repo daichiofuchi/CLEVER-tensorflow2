@@ -17,6 +17,7 @@ import pickle
 import gzip
 import pickle
 import urllib.request
+from tensorflow.keras import *
 
 
 def load_batch(fpath, label_key='labels'):
