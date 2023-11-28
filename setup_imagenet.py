@@ -53,7 +53,8 @@ import numpy as np
 from six.moves import urllib
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
-from tensorflow.keras import *
+from tensorflow import keras
+from tensorflow.keras import ***
 
 import PIL
 from PIL import Image

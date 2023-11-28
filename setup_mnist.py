@@ -15,7 +15,8 @@ import os
 import pickle
 import gzip
 import urllib.request
-from tensorflow.keras import *
+from tensorflow import keras
+from tensorflow.keras import ***
 
 
 def extract_data(filename, num_images):
