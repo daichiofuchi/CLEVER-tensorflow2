@@ -28,7 +28,7 @@ from multiprocessing import Pool, current_process, cpu_count
 from shmemarray import ShmemRawArray, NpShmemArray
 from functools import partial
 from randsphere import randsphere
-from tensorflow.python.ops import gradients_impl
+
 
      
 class EstimateLipschitz(object):

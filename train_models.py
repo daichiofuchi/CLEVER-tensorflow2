@@ -14,12 +14,7 @@
 import numpy as np
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
-from tensorflow.contrib.keras.api.keras.models import Sequential
-from tensorflow.contrib.keras.api.keras.layers import Dense, Dropout, Activation, Flatten
-from tensorflow.contrib.keras.api.keras.layers import Conv2D, MaxPooling2D
-from tensorflow.contrib.keras.api.keras.layers import Lambda
-from tensorflow.contrib.keras.api.keras.models import load_model
-from tensorflow.contrib.keras.api.keras.optimizers import SGD
+
 
 
 from setup_mnist import MNIST
