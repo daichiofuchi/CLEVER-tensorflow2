@@ -18,12 +18,12 @@ import gzip
 import pickle
 import urllib.request
 
-from tf.contrib.keras.api.keras.models import Sequential
-from tf.contrib.keras.api.keras.layers import Dense, Dropout, Activation, Flatten
-from tf.contrib.keras.api.keras.layers import Conv2D, MaxPooling2D
-from tf.contrib.keras.api.keras.layers import Lambda
-from tf.contrib.keras.api.keras.models import load_model
-from tf.contrib.keras.api.keras import backend as K
+from tensorflow.contrib.keras.api.keras.models import Sequential
+from tensorflow.contrib.keras.api.keras.layers import Dense, Dropout, Activation, Flatten
+from tensorflow.contrib.keras.api.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.contrib.keras.api.keras.layers import Lambda
+from tensorflow.contrib.keras.api.keras.models import load_model
+from tensorflow.contrib.keras.api.keras import backend as K
 
 def load_batch(fpath, label_key='labels'):
     f = open(fpath, 'rb')
