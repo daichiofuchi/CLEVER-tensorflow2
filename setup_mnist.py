@@ -15,8 +15,9 @@ import os
 import pickle
 import gzip
 import urllib.request
-from tensorflow import keras
-from tensorflow.keras import ***
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
+from tensorflow.keras.optimizers import SGD
 
 
 def extract_data(filename, num_images):

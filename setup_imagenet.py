@@ -53,8 +53,9 @@ import numpy as np
 from six.moves import urllib
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
-from tensorflow import keras
-from tensorflow.keras import ***
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
+from tensorflow.keras.optimizers import SGD
 
 import PIL
 from PIL import Image
