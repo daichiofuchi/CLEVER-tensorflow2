@@ -12,14 +12,10 @@
 
 
 import numpy as np
-from tensorflow.contrib.keras.api.keras.models import Sequential
-from tensorflow.contrib.keras.api.keras.layers import Dense, Dropout, Activation, Flatten
-from tensorflow.contrib.keras.api.keras.layers import Conv2D, MaxPooling2D
-from tensorflow.contrib.keras.api.keras.layers import Lambda
-from tensorflow.contrib.keras.api.keras.models import load_model
-from tensorflow.contrib.keras.api.keras.optimizers import SGD
-
 import tensorflow as tf
+from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
+from tensorflow.keras.optimizers import SGD
 from setup_mnist import MNIST
 from setup_cifar import CIFAR
 import os
@@ -57,14 +53,11 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
         model.load_weights(init)
 
     def fn(correct, predicted):
-        return tf.nn.softmax_cross_entropy_with_logits(labels=correct,
-                                                       logits=predicted/train_temp)
+        return tf.keras.backend.categorical_crossentropy(correct, predicted/train_temp, from_logits=True)
 
-    sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+    sgd = SGD(learning_rate=0.01, momentum=0.9, nesterov=True)
     
-    model.compile(loss=fn,
-                  optimizer=sgd,
-                  metrics=['accuracy'])
+    model.compile(loss=fn, optimizer=sgd, metrics=['accuracy'])
     
     model.fit(data.train_data, data.train_labels,
               batch_size=batch_size,
