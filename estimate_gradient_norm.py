@@ -21,17 +21,13 @@ import ctypes
 import time
 import sys
 import os
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
-from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
-from tensorflow.keras.optimizers import SGD
+import tensorflow as tf
 
 from multiprocessing import Pool, current_process, cpu_count
 from shmemarray import ShmemRawArray, NpShmemArray
 from functools import partial
 from randsphere import randsphere
-
+from tensorflow.python.ops import gradients_impl
 
      
 class EstimateLipschitz(object):

@@ -9,18 +9,20 @@
 ## contained in the LICENCE file in this directory.
 
 
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
+import tensorflow as tf
 import numpy as np
 import os
 import pickle
 import gzip
 import pickle
 import urllib.request
-from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
-from tensorflow.keras.optimizers import SGD
 
+from tensorflow.contrib.keras.api.keras.models import Sequential
+from tensorflow.contrib.keras.api.keras.layers import Dense, Dropout, Activation, Flatten
+from tensorflow.contrib.keras.api.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.contrib.keras.api.keras.layers import Lambda
+from tensorflow.contrib.keras.api.keras.models import load_model
+from tensorflow.contrib.keras.api.keras import backend as K
 
 def load_batch(fpath, label_key='labels'):
     f = open(fpath, 'rb')

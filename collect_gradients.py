@@ -93,9 +93,7 @@ if __name__ == "__main__":
         target_classes = None
         target_type = args['target_type']
 
-    import tensorflow.compat.v1 as tf
-    tf.disable_v2_behavior()
-    from tensorflow.keras import *
+    import tensorflow as tf
     from setup_cifar import CIFAR
     from setup_mnist import MNIST
     from setup_imagenet import ImageNet

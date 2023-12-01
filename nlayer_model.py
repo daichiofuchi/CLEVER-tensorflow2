@@ -12,11 +12,12 @@ import pickle
 import gzip
 import argparse
 import urllib.request
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
-from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
-from tensorflow.keras.optimizers import SGD
+
+from tensorflow.contrib.keras.api.keras.models import Sequential
+from tensorflow.contrib.keras.api.keras.layers import Dense, Dropout, Activation, Flatten
+from tensorflow.contrib.keras.api.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.contrib.keras.api.keras.models import load_model
+from tensorflow.contrib.keras.api.keras import backend as K
 
 
 class NLayerModel:
@@ -72,8 +73,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     nlayers = len(args.layer_parameters) + 1
 
-    import tensorflow.compat.v1 as tf
-    tf.disable_v2_behavior()
+    import tensorflow as tf
     with tf.Session() as sess:
         # if a model file is not specified, use a manual override
         if not args.modelfile:

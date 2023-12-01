@@ -2,12 +2,7 @@ import PIL
 import PIL.Image
 from io import BytesIO
 import numpy as np
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
-from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
-from tensorflow.keras.optimizers import SGD
-
+import tensorflow as tf
 from numba import njit
 
 def defend_reduce(arr, depth=3):

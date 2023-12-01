@@ -13,16 +13,18 @@ contained in the LICENCE file in this directory.
 """
 
 import numpy as np
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
-from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
-from tensorflow.keras.optimizers import SGD
+from tensorflow.contrib.keras.api.keras.models import Sequential
+from tensorflow.contrib.keras.api.keras.layers import Dense, Dropout, Activation, Flatten, Lambda
+from tensorflow.contrib.keras.api.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.contrib.keras.api.keras.models import load_model
+from tensorflow.contrib.keras.api.keras import backend as K
+from tensorflow.contrib.keras.api.keras.optimizers import SGD, Adam
+import tensorflow as tf
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 K.set_session(tf.Session(config=config))
 
-
+import tensorflow as tf
 from setup_mnist import MNIST
 from setup_cifar import CIFAR
 import argparse
