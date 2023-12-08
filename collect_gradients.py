@@ -98,7 +98,7 @@ if __name__ == "__main__":
     from setup_mnist import MNIST
     from setup_imagenet import ImageNet
 
-    tf.set_random_seed(seed)
+    tf.random.set_seed(seed)
     config = tf.ConfigProto()
     config.gpu_options.allow_growth=True
     with tf.Session(config=config) as sess:
