@@ -98,20 +98,30 @@ if __name__ == "__main__":
     from setup_mnist import MNIST
     from setup_imagenet import ImageNet
 
+    # tf.random.set_seed(seed)
+    # config = tf.ConfigProto()
+    # config.gpu_options.allow_growth=True
+    # with tf.Session(config=config) as sess:
+        # GPU設定
+    gpus = tf.config.experimental.list_physical_devices('GPU')
+    if gpus:
+        try:
+            for gpu in gpus:
+                tf.config.experimental.set_memory_growth(gpu, True)
+        except RuntimeError as e:
+            print(e)
+
     tf.random.set_seed(seed)
-    config = tf.ConfigProto()
-    config.gpu_options.allow_growth=True
-    with tf.Session(config=config) as sess:
-        clever_estimator.sess = sess
+    # clever_estimator.sess = sess
         # returns the input tensor and output prediction vector
-        img, output = clever_estimator.load_model(dataset, model_name, activation = args['activation'], batch_size = args['batch_size'], compute_slope = args['compute_slope'], order = args['order'])
-        # load dataset
-        datasets_loader = {"mnist": MNIST, "cifar": CIFAR, "imagenet": partial(ImageNet, clever_estimator.model.image_size)}
-        data = datasets_loader[dataset]()
-        # for prediction
-        predictor = lambda x: np.squeeze(sess.run(output, feed_dict = {img: x}))
-        # generate target images
-        inputs, targets, true_labels, true_ids, img_info = generate_data(data, samples=numimg, targeted=True,
+    img, output = clever_estimator.load_model(dataset, model_name, activation = args['activation'], batch_size = args['batch_size'], compute_slope = args['compute_slope'], order = args['order'])
+    # load dataset
+    datasets_loader = {"mnist": MNIST, "cifar": CIFAR, "imagenet": partial(ImageNet, clever_estimator.model.image_size)}
+    data = datasets_loader[dataset]()
+    # for prediction
+    predictor = lambda x: np.squeeze(output(x))
+    # generate target images
+    inputs, targets, true_labels, true_ids, img_info = generate_data(data, samples=numimg, targeted=True,
                                     start=start, predictor=predictor,
                                     random_and_least_likely = True,
                                     ids = ids, target_classes = target_classes, target_type = target_type,
@@ -119,47 +129,47 @@ if __name__ == "__main__":
                                     remove_background_class="imagenet" in dataset and 
                                     ("vgg" in model_name or "densenet" in model_name or "alexnet" in model_name))
 
-        timestart = time.time()
-        print("got {} images".format(inputs.shape))
-        for i, input_img in enumerate(inputs):
-            # original_predict = np.squeeze(sess.run(output, feed_dict = {img: [input_img]}))
-            print("processing image {}".format(i))
-            original_predict = predictor([input_img])
-            true_label = np.argmax(true_labels[i])
-            predicted_label = np.argmax(original_predict)
-            least_likely_label = np.argmin(original_predict)
-            original_prob = np.sort(original_predict)
-            original_class = np.argsort(original_predict)
-            print("Top-10 classifications:", original_class[-1:-11:-1])
-            print("True label:", true_label)
-            print("Top-10 probabilities/logits:", original_prob[-1:-11:-1])
-            print("Most unlikely classifications:", original_class[:10])
-            print("Most unlikely probabilities/logits:", original_prob[:10])
-            if true_label != predicted_label:
-                print("[WARNING] This image is classfied wrongly by the classifier! Skipping!")
-                continue
-            total += 1
-            # set target class
-            target_label = np.argmax(targets[i]);
-            print('Target class: ', target_label)
+    timestart = time.time()
+    print("got {} images".format(inputs.shape))
+    for i, input_img in enumerate(inputs):
+        # original_predict = np.squeeze(sess.run(output, feed_dict = {img: [input_img]}))
+        print("processing image {}".format(i))
+        original_predict = predictor([input_img])
+        true_label = np.argmax(true_labels[i])
+        predicted_label = np.argmax(original_predict)
+        least_likely_label = np.argmin(original_predict)
+        original_prob = np.sort(original_predict)
+        original_class = np.argsort(original_predict)
+        print("Top-10 classifications:", original_class[-1:-11:-1])
+        print("True label:", true_label)
+        print("Top-10 probabilities/logits:", original_prob[-1:-11:-1])
+        print("Most unlikely classifications:", original_class[:10])
+        print("Most unlikely probabilities/logits:", original_prob[:10])
+        if true_label != predicted_label:
+            print("[WARNING] This image is classfied wrongly by the classifier! Skipping!")
+            continue
+        total += 1
+        # set target class
+        target_label = np.argmax(targets[i]);
+        print('Target class: ', target_label)
+        sys.stdout.flush()
+       
+        if args['order'] == 1:
+            [L2_max,L1_max,Li_max,G2_max,G1_max,Gi_max,g_x0,pred] = clever_estimator.estimate(input_img, true_label, target_label, Nsamp, Niters, args['sample_norm'], args['transform'], args['order'])
+            print("[STATS][L1] total = {}, seq = {}, id = {}, time = {:.3f}, true_class = {}, target_class = {}, info = {}".format(total, i, true_ids[i], time.time() - timestart, true_label, target_label, img_info[i]))
+            # save to sampling results to matlab ;)
+            mat_path = "{}/{}_{}/{}_{}_{}_{}_{}_{}_{}_order{}.mat".format(save_path, dataset, model_name, Nsamp, Niters, true_ids[i], true_label, target_label, img_info[i], args['activation'], args['order'])
+            save_dict = {'L2_max': L2_max, 'L1_max': L1_max, 'Li_max': Li_max, 'G2_max': G2_max, 'G1_max': G1_max, 'Gi_max': Gi_max, 'pred': pred, 'g_x0': g_x0, 'id': true_ids[i], 'true_label': true_label, 'target_label': target_label, 'info':img_info[i], 'args': args, 'path': mat_path}
+            sio.savemat(mat_path, save_dict)
+            print('saved to', mat_path)
             sys.stdout.flush()
-           
-            if args['order'] == 1:
-                [L2_max,L1_max,Li_max,G2_max,G1_max,Gi_max,g_x0,pred] = clever_estimator.estimate(input_img, true_label, target_label, Nsamp, Niters, args['sample_norm'], args['transform'], args['order'])
-                print("[STATS][L1] total = {}, seq = {}, id = {}, time = {:.3f}, true_class = {}, target_class = {}, info = {}".format(total, i, true_ids[i], time.time() - timestart, true_label, target_label, img_info[i]))
-                # save to sampling results to matlab ;)
-                mat_path = "{}/{}_{}/{}_{}_{}_{}_{}_{}_{}_order{}.mat".format(save_path, dataset, model_name, Nsamp, Niters, true_ids[i], true_label, target_label, img_info[i], args['activation'], args['order'])
-                save_dict = {'L2_max': L2_max, 'L1_max': L1_max, 'Li_max': Li_max, 'G2_max': G2_max, 'G1_max': G1_max, 'Gi_max': Gi_max, 'pred': pred, 'g_x0': g_x0, 'id': true_ids[i], 'true_label': true_label, 'target_label': target_label, 'info':img_info[i], 'args': args, 'path': mat_path}
-                sio.savemat(mat_path, save_dict)
-                print('saved to', mat_path)
-                sys.stdout.flush()
-            elif args['order'] == 2:
-                [H2_max,g_x0,g_x0_grad_2_norm,g_x0_grad_1_norm,g_x0_grad_inf_norm,pred] = clever_estimator.estimate(input_img, true_label, target_label, Nsamp, Niters, args['sample_norm'], args['transform'], args['order'])
-                print("[STATS][L1] total = {}, seq = {}, id = {}, time = {:.3f}, true_class = {}, target_class = {}, info = {}".format(total, i, true_ids[i], time.time() - timestart, true_label, target_label, img_info[i]))
-                # save to sampling results to matlab ;)
-                mat_path = "{}/{}_{}/{}_{}_{}_{}_{}_{}_{}_order{}.mat".format(save_path, dataset, model_name, Nsamp, Niters, true_ids[i], true_label, target_label, img_info[i], args['activation'], args['order'])
-                save_dict = {'H2_max': H2_max, 'pred': pred, 'g_x0': g_x0, 'id': true_ids[i], 'true_label': true_label, 'target_label': target_label, 'info':img_info[i], 'args': args, 'path': mat_path, 'g_x0_grad_2_norm': g_x0_grad_2_norm}
-                sio.savemat(mat_path, save_dict)
-                print('saved to', mat_path)
-                sys.stdout.flush()
+        elif args['order'] == 2:
+            [H2_max,g_x0,g_x0_grad_2_norm,g_x0_grad_1_norm,g_x0_grad_inf_norm,pred] = clever_estimator.estimate(input_img, true_label, target_label, Nsamp, Niters, args['sample_norm'], args['transform'], args['order'])
+            print("[STATS][L1] total = {}, seq = {}, id = {}, time = {:.3f}, true_class = {}, target_class = {}, info = {}".format(total, i, true_ids[i], time.time() - timestart, true_label, target_label, img_info[i]))
+            # save to sampling results to matlab ;)
+            mat_path = "{}/{}_{}/{}_{}_{}_{}_{}_{}_{}_order{}.mat".format(save_path, dataset, model_name, Nsamp, Niters, true_ids[i], true_label, target_label, img_info[i], args['activation'], args['order'])
+            save_dict = {'H2_max': H2_max, 'pred': pred, 'g_x0': g_x0, 'id': true_ids[i], 'true_label': true_label, 'target_label': target_label, 'info':img_info[i], 'args': args, 'path': mat_path, 'g_x0_grad_2_norm': g_x0_grad_2_norm}
+            sio.savemat(mat_path, save_dict)
+            print('saved to', mat_path)
+            sys.stdout.flush()
 
