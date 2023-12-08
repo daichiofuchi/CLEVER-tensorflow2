@@ -16,7 +16,7 @@ import gzip
 import urllib.request
 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D, Lambda
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D, Lambda, AveragePooling2D
 from tensorflow.keras import backend as K
 
 def extract_data(filename, num_images):
@@ -61,7 +61,7 @@ class MNIST:
 
 
 class MNISTModel:
-    def __init__(self, restore = None, session=None, use_softmax=False, use_brelu = False, activation = "relu"):
+    def __init__(self, restore = '/content/drive/My Drive/saved_model/lenet5_model.h5', session=None, use_softmax=False, use_brelu = False, activation = "relu"):
         def bounded_relu(x):
                 return K.relu(x, max_value=1)
         if use_brelu:
@@ -73,27 +73,37 @@ class MNISTModel:
         self.image_size = 28
         self.num_labels = 10
 
-        model = Sequential()
+        # model = Sequential()
 
-        model.add(Conv2D(32, (3, 3),
-                         input_shape=(28, 28, 1)))
-        model.add(Activation(activation))
-        model.add(Conv2D(32, (3, 3)))
-        model.add(Activation(activation))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
+        # model.add(Conv2D(32, (3, 3),
+        #                  input_shape=(28, 28, 1)))
+        # model.add(Activation(activation))
+        # model.add(Conv2D(32, (3, 3)))
+        # model.add(Activation(activation))
+        # model.add(MaxPooling2D(pool_size=(2, 2)))
         
-        model.add(Conv2D(64, (3, 3)))
-        model.add(Activation(activation))
-        model.add(Conv2D(64, (3, 3)))
-        model.add(Activation(activation))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
+        # model.add(Conv2D(64, (3, 3)))
+        # model.add(Activation(activation))
+        # model.add(Conv2D(64, (3, 3)))
+        # model.add(Activation(activation))
+        # model.add(MaxPooling2D(pool_size=(2, 2)))
         
+        # model.add(Flatten())
+        # model.add(Dense(200))
+        # model.add(Activation(activation))
+        # model.add(Dense(200))
+        # model.add(Activation(activation))
+        # model.add(Dense(10))
+                # LeNet-5モデルの定義
+        model = Sequential()
+        model.add(Conv2D(6, (5, 5), activation='tanh', input_shape=(28, 28, 1)))
+        model.add(AveragePooling2D())
+        model.add(Conv2D(16, (5, 5), activation='tanh'))
+        model.add(AveragePooling2D())
         model.add(Flatten())
-        model.add(Dense(200))
-        model.add(Activation(activation))
-        model.add(Dense(200))
-        model.add(Activation(activation))
-        model.add(Dense(10))
+        model.add(Dense(120, activation='tanh'))
+        model.add(Dense(84, activation='tanh'))
+        model.add(Dense(10, activation='softmax'))
         # output log probability, used for black-box attack
         if use_softmax:
             model.add(Activation('softmax'))
