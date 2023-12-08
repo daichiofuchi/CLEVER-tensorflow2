@@ -95,21 +95,21 @@ class MNISTModel:
         # model.add(Activation(activation))
         # model.add(Dense(10))
                 # LeNet-5モデルの定義
-        model = Sequential()
-        model.add(Conv2D(6, (5, 5), activation='tanh', input_shape=(28, 28, 1)))
-        model.add(AveragePooling2D())
-        model.add(Conv2D(16, (5, 5), activation='tanh'))
-        model.add(AveragePooling2D())
-        model.add(Flatten())
-        model.add(Dense(120, activation='tanh'))
-        model.add(Dense(84, activation='tanh'))
-        model.add(Dense(10, activation='softmax'))
-        # output log probability, used for black-box attack
-        if use_softmax:
-            model.add(Activation('softmax'))
-        if restore:
-            model.load_weights('/content/drive/My Drive/saved_model/lenet5_model.h5')
-
+        # model = Sequential()
+        # model.add(Conv2D(6, (5, 5), activation='tanh', input_shape=(28, 28, 1)))
+        # model.add(AveragePooling2D())
+        # model.add(Conv2D(16, (5, 5), activation='tanh'))
+        # model.add(AveragePooling2D())
+        # model.add(Flatten())
+        # model.add(Dense(120, activation='tanh'))
+        # model.add(Dense(84, activation='tanh'))
+        # model.add(Dense(10, activation='softmax'))
+        # # output log probability, used for black-box attack
+        # if use_softmax:
+        #     model.add(Activation('softmax'))
+        # if restore:
+        #     model.load_weights('/content/drive/My Drive/saved_model/lenet5_model.h5')
+        model = tf.keras.models.load_model('/content/drive/My Drive/saved_model/lenet5_model.h5')
         layer_outputs = []
         for layer in model.layers:
             if isinstance(layer, Conv2D) or isinstance(layer, Dense):
