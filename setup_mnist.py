@@ -108,7 +108,7 @@ class MNISTModel:
         if use_softmax:
             model.add(Activation('softmax'))
         if restore:
-            model.load_weights(restore)
+            model.load_weights('/content/drive/My Drive/saved_model/lenet5_model.h5')
 
         layer_outputs = []
         for layer in model.layers:
