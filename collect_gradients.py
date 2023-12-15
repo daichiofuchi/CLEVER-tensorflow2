@@ -114,7 +114,7 @@ if __name__ == "__main__":
     tf.random.set_seed(seed)
     # clever_estimator.sess = sess
         # returns the input tensor and output prediction vector
-    img, output = clever_estimator.load_model(dataset, model_name, activation = args['activation'], batch_size = args['batch_size'], compute_slope = args['compute_slope'], order = args['order'])
+    img, output = clever_estimator.load_model(dataset, model_name, activation = args['activation'], batch_size = args['batch_size'], compute_slope = args['compute_slope'], order = args['order'], true_label=3, target_label=5)
     # load dataset
     datasets_loader = {"mnist": MNIST, "cifar": CIFAR, "imagenet": partial(ImageNet, clever_estimator.model.image_size)}
     data = datasets_loader[dataset]()

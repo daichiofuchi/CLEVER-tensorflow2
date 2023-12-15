@@ -52,7 +52,7 @@ class EstimateLipschitz(object):
             os.environ['OMP_NUM_THREADS'] = "1"
         self.pool = Pool(processes = self.n_processes, initializer = initializer, initargs=(self.seed,))
 
-    def load_model(self, dataset = "mnist", model_name = "2-layer", activation = "relu", model = None, batch_size = 0, compute_slope = False, order = 1):
+    def load_model(self, dataset = "mnist", model_name = "2-layer", activation = "relu", model = None, batch_size = 0, compute_slope = False, order = 1, true_label=None, target_label=None):
         """
         model: if set to None, then load dataset with model_name. Otherwise use the model directly.
         dataset: mnist, cifar and imagenet. recommend to use mnist and cifar as a starting point.
@@ -147,10 +147,9 @@ class EstimateLipschitz(object):
         # self.output = model.predict(self.img)
         # create the graph to compute gradient
         # get the desired true label and target label
-        self.true_label = tf.TensorSpec(dtype = tf.int32, shape = [])
-        self.target_label = tf.TensorSpec(dtype = tf.int32, shape = [])
-        true_output = self.output[:, self.true_label]
-        target_output = self.output[:, self.target_label]
+        # self.true_label = tf.TensorSpec(dtype = tf.int32, shape = [])
+        true_output = self.output[:, true_label]
+        target_output = self.output[:, target_label]
         # get the difference
         self.objective = true_output - target_output
         # get the gradient(deprecated arguments)
