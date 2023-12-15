@@ -94,7 +94,7 @@ class MNISTModel:
         #     model.add(Activation('softmax'))
         # if restore:
         #     model.load_weights(restore)
-        default_path = '/content/drive/My Drive/saved_model/"
+        default_path = "/content/drive/My Drive/saved_model/"
         model_path = 'model_2_class.h5'
         model = tf.keras.models.load_model(default_path + model_path)
         print(model_path)
