@@ -138,7 +138,13 @@ class EstimateLipschitz(object):
         # self.img = tf.TensorSpec(shape = [None, model.image_size, model.image_size, model.num_channels], dtype = tf.float32)
         self.img = tf.TensorSpec(shape=[None, model.image_size, model.image_size, model.num_channels], dtype=tf.float32)
         # output is the output tensor of the entire network
-        self.output = model.predict(self.img)
+            # ここで実際の画像データを取得する
+        mnist_data = MNIST()
+        test_images = mnist_data.test_data
+
+        # モデルに画像データを渡す
+        self.output = model.predict(test_images)
+        # self.output = model.predict(self.img)
         # create the graph to compute gradient
         # get the desired true label and target label
         self.true_label = tf.TensorSpec(dtype = tf.int32, shape = [])

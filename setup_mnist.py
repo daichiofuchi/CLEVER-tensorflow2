@@ -67,7 +67,7 @@ class MNISTModel:
         if use_brelu:
             activation = bounded_relu
 
-        print("inside MNISTModel: activation = {}".format(activation))
+        # print("inside MNISTModel: activation = {}".format(activation))
 
         self.num_channels = 1
         self.image_size = 28
@@ -117,7 +117,7 @@ class MNISTModel:
 
         self.model = model
         self.layer_outputs = layer_outputs
-
+        
     def predict(self, data):
         return self.model(data)
 
