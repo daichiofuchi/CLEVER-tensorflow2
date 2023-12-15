@@ -72,30 +72,10 @@ class MNISTModel:
         self.num_channels = 1
         self.image_size = 28
         self.num_labels = 10
-
-        # model = Sequential()
-
-        # model.add(Conv2D(6, (5, 5),
-        #                  input_shape=(28, 28, 1)))
-        # model.add(Activation(activation))
-        # model.add(AveragePooling2D())
-        # model.add(Conv2D(16, (5, 5)))
-        # model.add(Activation(activation))
-        # model.add(AveragePooling2D())
-        
-        # model.add(Flatten())
-        # model.add(Dense(120))
-        # model.add(Activation(activation))
-        # model.add(Dense(84))
-        # model.add(Activation(activation))
-        # model.add(Dense(10))
-        # # output log probability, used for black-box attack
-        # if use_softmax:
-        #     model.add(Activation('softmax'))
-        # if restore:
-        #     model.load_weights(restore)
         default_path = "/content/drive/My Drive/saved_model/"
-        model_path = 'model_4_class.h5'
+        # model_path = 'model_4_class.h5'
+        model_path = 'cifar10_model_0_all.h5'
+
         model = tf.keras.models.load_model(default_path + model_path)
         print(model_path)
         layer_outputs = []
