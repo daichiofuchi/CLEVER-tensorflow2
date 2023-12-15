@@ -94,7 +94,7 @@ class MNISTModel:
         #     model.add(Activation('softmax'))
         # if restore:
         #     model.load_weights(restore)
-        model = tf.keras.models.load_model('/content/drive/My Drive/saved_model/model_1_all.h5')
+        model = tf.keras.models.load_model('/content/drive/My Drive/saved_model/model_0_class.h5')
         layer_outputs = []
         for layer in model.layers:
             if isinstance(layer, Conv2D) or isinstance(layer, Dense):
