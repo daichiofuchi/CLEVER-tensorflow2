@@ -106,7 +106,7 @@ class CIFARModel:
         model_path = 'cifar10_model_0_all.h5'
 
         model = tf.keras.models.load_model(default_path + model_path)
-
+        print(model_path)
         layer_outputs = []
         for layer in model.layers:
             if isinstance(layer, Conv2D) or isinstance(layer, Dense):
