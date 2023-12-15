@@ -169,12 +169,12 @@ class NodeLookup(object):
     Returns:
       dict from integer node ID to human-readable string.
     """
-    if not tf.gfile.Exists(label_lookup_path):
-      tf.logging.fatal('File does not exist %s', label_lookup_path)
+    if not tf.io.gfile.exists(label_lookup_path):
+      tf.compat.v1.logging.fatal('File does not exist %s', label_lookup_path)
 
     # Loads mapping from string UID to integer node ID.
     node_id_to_name = {}
-    proto_as_ascii = tf.gfile.GFile(label_lookup_path).readlines()
+    proto_as_ascii = tf.io.gfile.GFile(label_lookup_path).readlines()
     for line in proto_as_ascii:
       if line:
         words = line.split(':')
@@ -195,10 +195,10 @@ def create_graph(model_param):
   """Creates a graph from saved GraphDef file and returns a saver."""
   # Creates graph from saved graph_def.pb.
   global LOADED_GRAPH
-  with tf.gfile.FastGFile(os.path.join(
+  with tf.compat.v1.gfile.FastGFile(os.path.join(
     #  FLAGS.model_dir, 'classify_image_graph_def.pb'), 'rb') as f:
       FLAGS.model_dir, model_param['model_filename']), 'rb') as f:
-    graph_def = tf.GraphDef()
+    graph_def = tf.compat.v1.GraphDef()
     graph_def.ParseFromString(f.read())
     #for line in repr(graph_def).split("\n"):
     #  if "tensor_content" not in line:
@@ -216,7 +216,7 @@ class ImageNetModelPrediction:
     self.shape_name = model_param['shape']
     self.model_name = model_param['name']
     self.image_size = model_param['size']
-    self.img = tf.placeholder(tf.float32, (None, self.image_size, self.image_size, 3))
+    self.img = tf.compat.v1.placeholder(tf.float32, (None, self.image_size, self.image_size, 3))
     if not softmax_tensor:
       # no existing graph
       self.softmax_tensor = tf.import_graph_def(
@@ -374,7 +374,7 @@ def main(_):
   # run_inference_on_image(image)
   create_graph(param)
   image_size = param['size']
-  with tf.Session() as sess:
+  with tf.compat.v1.Session() as sess:
     dat = np.array(scipy.misc.imresize(scipy.misc.imread(image),(image_size, image_size)), dtype = np.float32)
     dat /= 255.0
     dat -= 0.5
@@ -470,25 +470,25 @@ class ImageNet:
     pool.join()
 
 if __name__ == '__main__':
-  FLAGS = tf.app.flags.FLAGS
+  FLAGS = tf.compat.v1.app.flags.FLAGS
   # classify_image_graph_def.pb:
   #   Binary representation of the GraphDef protocol buffer.
   # imagenet_synset_to_human_label_map.txt:
   #   Map from synset ID to a human readable string.
   # imagenet_2012_challenge_label_map_proto.pbtxt:
   #   Text representation of a protocol buffer mapping a label to synset ID.
-  tf.app.flags.DEFINE_string(
+  tf.compat.v1.app.flags.DEFINE_string(
       'model_dir', 'tmp/imagenet',
       """Path to classify_image_graph_def.pb, """
       """imagenet_synset_to_human_label_map.txt, and """
       """imagenet_2012_challenge_label_map_proto.pbtxt.""")
-  tf.app.flags.DEFINE_string('image_file', '',
+  tf.compat.v1.app.flags.DEFINE_string('image_file', '',
                              """Absolute path to image file.""")
-  tf.app.flags.DEFINE_string('model_name', 'resnet_v2_101',
+  tf.compat.v1.app.flags.DEFINE_string('model_name', 'resnet_v2_101',
                              """Absolute path to image file.""")
-  tf.app.flags.DEFINE_integer('num_top_predictions', 5,
+  tf.compat.v1.app.flags.DEFINE_integer('num_top_predictions', 5,
                               """Display this many predictions.""")
-  tf.app.run()
+  tf.compat.v1.app.run()
 else:
   # starting from TF 1.5, an parameter unkown by tf.app.flags will raise an error
   # so we cannot use tf.app.flags when loading this file as a module, because the

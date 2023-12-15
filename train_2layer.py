@@ -48,7 +48,7 @@ def train(data, file_name, params, num_epochs=50, batch_size=128, train_temp=1, 
 
     # define the loss function which is the cross entropy between prediction and true label
     def fn(correct, predicted):
-        return tf.nn.softmax_cross_entropy_with_logits(labels=correct,
+        return tf.nn.softmax_cross_entropy_with_logits(labels=tf.stop_gradient(correct),
                                                        logits=predicted/train_temp)
 
     # initiate the SGD optimizer with given hyper parameters

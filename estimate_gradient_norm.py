@@ -52,7 +52,7 @@ class EstimateLipschitz(object):
             os.environ['OMP_NUM_THREADS'] = "1"
         self.pool = Pool(processes = self.n_processes, initializer = initializer, initargs=(self.seed,))
 
-    def load_model(self, dataset = "mnist", model_name = "2-layer", activation = "relu", model = None, batch_size = 0, compute_slope = False, order = 1, true_label=None, target_label=None):
+    def load_model(self, dataset = "mnist", model_name = "2-layer", activation = "relu", model = None, batch_size = 0, compute_slope = False, order = 1):
         """
         model: if set to None, then load dataset with model_name. Otherwise use the model directly.
         dataset: mnist, cifar and imagenet. recommend to use mnist and cifar as a starting point.
@@ -134,22 +134,16 @@ class EstimateLipschitz(object):
             self.batch_size = batch_size
         
         ## placeholders: self.img, self.true_label, self.target_label
-        # img is the TensorSpec for image input
-        # self.img = tf.TensorSpec(shape = [None, model.image_size, model.image_size, model.num_channels], dtype = tf.float32)
-        self.img = tf.TensorSpec(shape=[None, model.image_size, model.image_size, model.num_channels], dtype=tf.float32)
+        # img is the placeholder for image input
+        self.img = tf.compat.v1.placeholder(shape = [None, model.image_size, model.image_size, model.num_channels], dtype = tf.float32)
         # output is the output tensor of the entire network
-            # ここで実際の画像データを取得する
-        mnist_data = MNIST()
-        test_images = mnist_data.test_data
-
-        # モデルに画像データを渡す
-        self.output = model.predict(test_images)
-        # self.output = model.predict(self.img)
+        self.output = model.predict(self.img)
         # create the graph to compute gradient
         # get the desired true label and target label
-        # self.true_label = tf.TensorSpec(dtype = tf.int32, shape = [])
-        true_output = self.output[:, true_label]
-        target_output = self.output[:, target_label]
+        self.true_label = tf.compat.v1.placeholder(dtype = tf.int32, shape = [])
+        self.target_label = tf.compat.v1.placeholder(dtype = tf.int32, shape = [])
+        true_output = self.output[:, self.true_label]
+        target_output = self.output[:, self.target_label]
         # get the difference
         self.objective = true_output - target_output
         # get the gradient(deprecated arguments)
@@ -167,7 +161,7 @@ class EstimateLipschitz(object):
             ## xs: a list of tensors that we should construct the Hessian over
             ## v: a list of tensors with the same shape as xs that we want to multiply by the Hessian
             # self.randv: shape = (Nimg,28,28,1) (the v in _hessian_vector_product)
-            self.randv = tf.TensorSpec(shape = [None, model.image_size, model.image_size, model.num_channels], dtype = tf.float32)
+            self.randv = tf.compat.v1.placeholder(shape = [None, model.image_size, model.image_size, model.num_channels], dtype = tf.float32)
             # hv_op_tmp: shape = (Nimg,28,28,1) for mnist, same as self.img (the xs in _hessian_vector_product)
             hv_op_tmp = gradients_impl._hessian_vector_product(self.objective, [self.img], [self.randv])[0]
             # hv_op_rs: reshape hv_op_tmp to hv_op_rs whose shape = (Nimg, 784) for mnist
@@ -217,10 +211,10 @@ class EstimateLipschitz(object):
 
             it = tf.constant(0)
             # compute largest abs eigenvalue
-            result = tf.while_loop(cond, body, [it, self.randv, self.vhv_op, self.eig_est, tf.constant(0.0)])
+            result = tf.while_loop(cond=cond, body=body, loop_vars=[it, self.randv, self.vhv_op, self.eig_est, tf.constant(0.0)])
             # compute largest neg eigenvalue
-            self.shiftconst = tf.TensorSpec(shape = (), dtype = tf.float32)
-            result_1 = tf.while_loop(cond, body, [it, self.randv, self.vhv_op, self.eig_est, self.shiftconst])
+            self.shiftconst = tf.compat.v1.placeholder(shape = (), dtype = tf.float32)
+            result_1 = tf.while_loop(cond=cond, body=body, loop_vars=[it, self.randv, self.vhv_op, self.eig_est, self.shiftconst])
 
             # computing largest abs eig value and save result
             self.it = result[0]

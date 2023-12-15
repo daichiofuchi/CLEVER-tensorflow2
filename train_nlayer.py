@@ -20,9 +20,9 @@ from tensorflow.contrib.keras.api.keras.models import load_model
 from tensorflow.contrib.keras.api.keras import backend as K
 from tensorflow.contrib.keras.api.keras.optimizers import SGD, Adam
 import tensorflow as tf
-config = tf.ConfigProto()
+config = tf.compat.v1.ConfigProto()
 config.gpu_options.allow_growth = True
-K.set_session(tf.Session(config=config))
+K.set_session(tf.compat.v1.Session(config=config))
 
 import tensorflow as tf
 from setup_mnist import MNIST
@@ -59,7 +59,7 @@ def train(data, file_name, params, num_epochs=50, batch_size=256, train_temp=1, 
 
     # define the loss function which is the cross entropy between prediction and true label
     def fn(correct, predicted):
-        return tf.nn.softmax_cross_entropy_with_logits(labels=correct,
+        return tf.nn.softmax_cross_entropy_with_logits(labels=tf.stop_gradient(correct),
                                                        logits=predicted/train_temp)
 
     if optimizer_name == "sgd":
@@ -132,7 +132,7 @@ def train_cnn_7layer(data, file_name, params, num_epochs=50, batch_size=256, tra
 
     # define the loss function which is the cross entropy between prediction and true label
     def fn(correct, predicted):
-        return tf.nn.softmax_cross_entropy_with_logits(labels=correct,
+        return tf.nn.softmax_cross_entropy_with_logits(labels=tf.stop_gradient(correct),
                                                        logits=predicted/train_temp)
 
     if optimizer_name == "sgd":
