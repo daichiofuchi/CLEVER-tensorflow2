@@ -101,32 +101,11 @@ class CIFARModel:
         self.num_channels = 3
         self.image_size = 32
         self.num_labels = 10
+        default_path = "/content/drive/My Drive/saved_model/"
+        # model_path = 'model_4_class.h5'
+        model_path = 'cifar10_model_0_all.h5'
 
-        model = Sequential()
-
-        model.add(Conv2D(64, (3, 3),
-                                input_shape=(32, 32, 3)))
-        model.add(Activation(activation))
-        model.add(Conv2D(64, (3, 3)))
-        model.add(Activation(activation))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
-        
-        model.add(Conv2D(128, (3, 3)))
-        model.add(Activation(activation))
-        model.add(Conv2D(128, (3, 3)))
-        model.add(Activation(activation))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
-        
-        model.add(Flatten())
-        model.add(Dense(256))
-        model.add(Activation(activation))
-        model.add(Dense(256))
-        model.add(Activation(activation))
-        model.add(Dense(10))
-        if use_softmax:
-            model.add(Activation('softmax'))
-        if restore:
-            model.load_weights(restore)
+        model = tf.keras.models.load_model(default_path + model_path)
 
         layer_outputs = []
         for layer in model.layers:
