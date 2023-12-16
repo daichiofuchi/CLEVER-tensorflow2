@@ -52,7 +52,7 @@ class EstimateLipschitz(object):
             os.environ['OMP_NUM_THREADS'] = "1"
         self.pool = Pool(processes = self.n_processes, initializer = initializer, initargs=(self.seed,))
 
-    def load_model(self, dataset = "mnist", model_name = "2-layer", activation = "relu", model = None, batch_size = 0, compute_slope = False, order = 1):
+    def load_model(self, dataset = "mnist", model_name = "normal", activation = "tanh", model = None, batch_size = 0, compute_slope = False, order = 1):
         """
         model: if set to None, then load dataset with model_name. Otherwise use the model directly.
         dataset: mnist, cifar and imagenet. recommend to use mnist and cifar as a starting point.
