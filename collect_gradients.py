@@ -69,6 +69,7 @@ if __name__ == "__main__":
 
     # create output directory
     os.system("mkdir -p {}/{}_{}".format(save_path, dataset, model_name))
+    print(model_name, "attentiooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooon")
 
     # create a Lipschitz estimator class (initial it early to save multiprocessing memory)
     clever_estimator = EstimateLipschitz(sess=None, nthreads=args['nthreads'])
